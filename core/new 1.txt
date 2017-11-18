@@ -1,0 +1,12 @@
+homework
+
+first name
+last name
+email
+password
+image
+
+
+image upload
+get last id
+
