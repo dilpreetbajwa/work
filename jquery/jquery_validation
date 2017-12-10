@@ -1,0 +1,243 @@
+$(function() {
+     function e(e, t) {
+        return Math.floor(Math.random() * (t - e)) + e
+    }
+    function t(e) {
+        var t = new String(e);
+        return t = t.replace(/[^a-zA-Z 0-9]+/g, "")
+    }
+    function n(e, t) {
+        $(".bubble").hide(),
+        $("#password-error-bubble").hide(),
+        $("#tooltip-username").remove(),
+        "username" == e && ($("#username-error-bubble .msg").html(t).parent().show(),
+        f = t),
+        "password" == e && ($("#password-error-bubble .msg").html(t).parent().show(),
+        d = t),
+        "email" == e && ($("#email-error-bubble .msg").html(t).parent().show(),
+        p = t),
+        c = t
+    }
+    function r() {
+        f.length > 0 && (c = f),
+        d.length > 0 && (c = d),
+        p.length > 0 && (c = p)
+    }
+    function o(e) {}
+    var i = new Date
+      , a = i.getMonth() + 1
+      , s = i.getDate()
+      , l = i.getFullYear();
+    $("#lstscan").html(a + "/" + s + "/" + l),
+    $("#username, #password, #email").val("");
+    var u = 0
+      , c = ""
+      , f = ""
+      , d = ""
+      , p = "";
+			
+		
+		var regex = new RegExp("^[a-zA-Z][a-zA-Z0-9.,$;]+$");
+		var regexs = new RegExp("^[a-zA-Z 0-9]+$");
+    $("#username").change(function() {
+			var uname = $(this).val();				
+			$("#username-error-bubble").show(),
+			$("#username-error-bubble .msg").html('');
+			$("#username-status-image").removeClass("status-image-wrong");
+			$("#username-status-image").removeClass("status-image-correct");
+			if(uname.length == 0){
+				$("#username-status-image").addClass("status-image-wrong");
+				$("#username-error-bubble .msg").html('Username cannot be blank!').show();
+			}
+			else if(uname.length < 6){
+				$("#username-status-image").addClass("status-image-wrong");
+				$("#username-error-bubble .msg").html('Username has to be at least 6 characters!').show();
+			}
+			else if(uname.length > 16){
+				$("#username-status-image").addClass("status-image-wrong");
+				$("#username-error-bubble .msg").html('Username has maximum 16 characters!').show();
+			}
+			else if(regexs.exec(uname) == null) {
+				$("#username-status-image").addClass("status-image-wrong");
+				$("#username-error-bubble .msg").html('Disallowed special characters!').show();
+			}
+			else if(regex.exec(uname) == null) {
+				$("#username-status-image").addClass("status-image-wrong");
+				$("#username-error-bubble .msg").html('Username must start with Character!').show();
+			}
+			else {
+				$.ajax({
+					url: "//join.cdgirls.com/cdg/signup_api.php?value=" + encodeURIComponent(uname) + "&field=username",
+					type: "get",
+					data: [],
+					success: function(response) {
+						if(response==1){
+							$("#username-status-image").addClass("status-image-correct");
+						} else {
+							$("#username-status-image").addClass("status-image-wrong");
+							$("#username-error-bubble .msg").html("Sorry, Username Already Taken. Please Choose Another.").show();
+						}
+					}
+				});
+			}
+    }),
+		
+    $("#password").change(function() {
+			var pass = $(this).val();
+			var uname = $("#username").val();
+			$("#password-error-bubble").show(),
+			$("#password-error-bubble .msg").html('');
+			$("#password-status-image").removeClass("status-image-wrong");
+			$("#password-status-image").removeClass("status-image-correct");
+			if(pass.length == 0){
+				$("#password-status-image").addClass("status-image-wrong");
+				$("#password-error-bubble .msg").html('Password cannot be blank!').show();
+			}
+			else if(pass.length < 6){
+				$("#password-status-image").addClass("status-image-wrong");
+				$("#password-error-bubble .msg").html('Password has to be at least 6 characters!').show();
+			}
+			else if(pass.length > 16){
+				$("#password-status-image").addClass("status-image-wrong");
+				$("#password-error-bubble .msg").html('Password has maximum 16 characters!').show();
+			}
+			else if(pass == uname){
+				$("#password-status-image").addClass("status-image-wrong");
+				$("#password-error-bubble .msg").html('Your Username and Password cannot be the same!').show();
+			}
+			else {
+				if(regexs.exec(pass) == null) {
+					$("#password-status-image").addClass("status-image-wrong");
+					$("#password-error-bubble .msg").html('Disallowed special characters!').show();
+				} else {
+					$("#password-status-image").addClass("status-image-correct");
+				}
+			}
+    }),
+		
+		$("#email").change(function() {
+			var email = $(this).val();
+			var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+			$("#email-error-bubble").show(),
+			$("#email-error-bubble .msg").html('');
+			$("#email-status-image").removeClass("status-image-wrong");
+			$("#email-status-image").removeClass("status-image-correct");			
+			if(email.length == 0){
+				$("#email-status-image").addClass("status-image-wrong");
+				$("#email-error-bubble .msg").html('Email cannot be blank!').show();
+			}
+			else if(email.length > 128){
+				$("#email-status-image").addClass("status-image-wrong");
+				$("#email-error-bubble .msg").html('Email has maximum 128 characters!').show();
+			}
+			else {
+				if(!emailReg.test(email)) {
+					$("#email-status-image").addClass("status-image-wrong");
+					$("#email-error-bubble .msg").html('Please enter valid email!').show();
+				} else {
+					$("#email-status-image").addClass("status-image-correct");
+				}
+			}
+    }),
+		
+    $("#btnSubmit").click(function() {
+        var e = $("#username").val();
+        if (e.length <= 0)
+            return void alert("You forgot to enter your username");
+        var t = $("#password").val();
+        if (t.length <= 0)
+            return void alert("You forgot to enter your password");
+        var n = $("#email").val();
+        if (n.length <= 0)
+            return void alert("You forgot to enter your email");
+        if (f.length > 0 || d.length > 0 || p.length > 0)
+            return void alert(c);
+        var r = "";
+        r = "username=" + $("#username").val(),
+        r += "&password=" + $("#password").val(),
+        r += "&email=" + $("#email").val(),
+        o(r),
+        $("#frm").submit()
+    }),
+    $("#frm").submit(function() {
+        var e = $("#username").val();
+        if (e.length <= 0)
+            return alert("You forgot to enter your username"),
+            !1;
+        var t = $("#password").val();
+        if (t.length <= 0)
+            return alert("You forgot to enter your password"),
+            !1;
+        var n = $("#email").val();
+        return n.length <= 0 ? void alert("You forgot to enter your email") : f.length > 0 || d.length > 0 || p.length > 0 ? (alert(c),
+        !1) : !0
+    }),
+    $("#btnSubmit").hover(function() {
+        $(this).addClass("btnSubmit-hover")
+    }, function() {
+        $(this).removeClass("btnSubmit-hover")
+    }),
+    $("#giftcard").click(function() {
+        $("#frmSpecial").submit()
+    }),
+    default_username.length > 0 && default_password.length > 0 && default_email.length > 0 && ($("#username").prev().hide(),
+    $("#password").prev().hide(),
+    $("#email").prev().hide(),
+    $("#username").val(default_username).trigger("change"),
+    $("#password").val(default_password).trigger("change"),
+    $("#email").val(default_email).trigger("change")),
+    $(document).keypress(function(e) {
+        13 == e.which && $("#frm").submit()
+    }),
+    $("#email").keypress(function(e) {
+        return 13 == e.which ? ($("#credit_card").focus(),
+        $("#frm").submit(),
+        !1) : void 0
+    })
+}),
+
+
+
+
+$(function() {
+    $("#username,#password,#email").prev().click(function() {
+        $(this).hide()
+    }),
+    $("#username,#password,#email").focusout(function() {
+        var e = $(this).val();
+        $(this).prev().hide(),
+        $(this).removeClass("selected"),
+        e.length <= 0 && $(this).prev().show()
+    }),
+    $("#username,#password,#email").focus(function() {
+        $(this).addClass("selected"),
+        $(this).prev().hide()
+    }),
+    $("#username,#password,#email").click(function() {
+        $(this).prev().hide()
+    }),
+    $("label[for=opt1]").click(function() {
+        $("label[for=opt1]>div").removeClass("join-option").addClass("selected-join-option"),
+        $("label[for=opt2]>div").removeClass("selected-join-option").addClass("join-option"),
+        $("label[for=opt3]>div").removeClass("selected-join-option").addClass("join-option"),
+        $("label[for=opt4]>div").removeClass("selected-join-option").addClass("join-option")
+    }),
+    $("label[for=opt2]").click(function() {
+        $("label[for=opt2]>div").removeClass("join-option").addClass("selected-join-option"),
+        $("label[for=opt1]>div").removeClass("selected-join-option").addClass("join-option"),
+        $("label[for=opt3]>div").removeClass("selected-join-option").addClass("join-option"),
+        $("label[for=opt4]>div").removeClass("selected-join-option").addClass("join-option")
+    }),
+    $("label[for=opt3]").click(function() {
+        $("label[for=opt3]>div").removeClass("join-option").addClass("selected-join-option"),
+        $("label[for=opt1]>div").removeClass("selected-join-option").addClass("join-option"),
+        $("label[for=opt2]>div").removeClass("selected-join-option").addClass("join-option"),
+        $("label[for=opt4]>div").removeClass("selected-join-option").addClass("join-option")
+    }),
+    $("label[for=opt4]").click(function() {
+        $("label[for=opt4]>div").removeClass("join-option").addClass("selected-join-option"),
+        $("label[for=opt1]>div").removeClass("selected-join-option").addClass("join-option"),
+        $("label[for=opt2]>div").removeClass("selected-join-option").addClass("join-option"),
+        $("label[for=opt3]>div").removeClass("selected-join-option").addClass("join-option")
+    })
+});
